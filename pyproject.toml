@@ -25,10 +25,10 @@ dev = [
 ]
 
 [project.scripts]
-kbd = "cmd.kbd:app"
+kbd = "cli.kbd:app"
 
 [tool.setuptools]
-packages = ["cmd", "core", "models", "ui", "export"]
+packages = ["cli", "core", "models", "ui", "export"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
