@@ -1,0 +1,25 @@
+[scan]
+# Directories to scan for git repositories (glob patterns supported)
+paths = ["~/projects"]
+# Patterns to exclude entirely from scanning
+exclude = ["**/.venv/**", "**/node_modules/**", "**/.git/**"]
+# Maximum depth to recurse when searching for .git directories
+max_depth = 5
+
+[database]
+# SQLite database file path (relative to project or absolute)
+path = "kbd.db"
+
+[autoresearch]
+# Filename to search for experiment logs
+filename = "autoresearch.jsonl"
+
+[ui]
+# TUI color theme: "dark" or "light"
+theme = "dark"
+# Number of repos to show on overview panel
+overview_repo_limit = 10
+
+[export]
+# Default output directory for HTML exports
+output_dir = "exports"

@@ -1,0 +1,10 @@
+{"session":"bundle_size_opt","metric":"bundle_size_kb","unit":"KB","direction":"lower","run":1,"value":892.3,"status":"keep","description":"baseline measurement","timestamp":"2024-01-10T09:00:00Z"}
+{"session":"bundle_size_opt","metric":"bundle_size_kb","unit":"KB","direction":"lower","run":2,"value":845.1,"status":"keep","description":"removed lodash, use native","timestamp":"2024-01-10T09:30:00Z"}
+{"session":"bundle_size_opt","metric":"bundle_size_kb","unit":"KB","direction":"lower","run":3,"value":843.7,"status":"keep","description":"tree-shaking enabled","timestamp":"2024-01-10T10:00:00Z"}
+{"session":"bundle_size_opt","metric":"bundle_size_kb","unit":"KB","direction":"lower","run":4,"value":899.1,"status":"discard","description":"css-in-js experiment failed","timestamp":"2024-01-10T10:30:00Z"}
+{"session":"bundle_size_opt","metric":"bundle_size_kb","unit":"KB","direction":"lower","run":5,"value":820.5,"status":"keep","description":"dynamic imports for routes","timestamp":"2024-01-10T11:00:00Z"}
+{"session":"api_latency_opt","metric":"p95_latency_ms","unit":"ms","direction":"lower","run":1,"value":245.0,"status":"keep","description":"baseline p95 latency","timestamp":"2024-01-15T09:00:00Z"}
+{"session":"api_latency_opt","metric":"p95_latency_ms","unit":"ms","direction":"lower","run":2,"value":198.0,"status":"keep","description":"added redis cache layer","timestamp":"2024-01-15T09:45:00Z"}
+{"session":"api_latency_opt","metric":"p95_latency_ms","unit":"ms","direction":"lower","run":3,"value":0.0,"status":"crash","description":"connection pool exhausted","timestamp":"2024-01-15T10:30:00Z"}
+{"session":"api_latency_opt","metric":"p95_latency_ms","unit":"ms","direction":"lower","run":4,"value":185.0,"status":"keep","description":"tuned pool size to 20","timestamp":"2024-01-15T11:00:00Z"}
+{"session":"api_latency_opt","metric":"p95_latency_ms","unit":"ms","direction":"lower","run":5,"value":172.0,"status":"keep","description":"query index added","timestamp":"2024-01-15T11:30:00Z"}
