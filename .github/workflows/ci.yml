@@ -21,7 +21,7 @@ jobs:
       - name: Install deps
         run: uv pip install -e ".[dev]" --system
       - name: Run unit tests
-        run: python -m pytest tests/unit -v --cov=core --cov=models --cov=export --cov-report=xml
+        run: python -m pytest tests/unit -v --cov=core --cov=models --cov=export --cov-report=xml -p no:pdb
       - name: Run integration tests
         run: python -m pytest tests/integration -v
 
