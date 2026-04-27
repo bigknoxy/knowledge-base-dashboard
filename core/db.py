@@ -1,13 +1,16 @@
+import os
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-DB_PATH = Path("kbd.db")
+DB_DIR = Path(os.getenv("XDG_DATA_HOME", str(Path.home() / ".local/share"))) / "kbd"
+DB_PATH = DB_DIR / "kbd.db"
 
 
 def get_connection(path: Path = DB_PATH) -> sqlite3.Connection:
+    path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(path, detect_types=sqlite3.PARSE_DECLTYPES)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")

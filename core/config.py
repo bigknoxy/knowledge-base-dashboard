@@ -1,8 +1,13 @@
+import os
 import tomllib
 from pathlib import Path
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
+
+CONFIG_DIR = Path(os.getenv("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "kbd"
+CONFIG_PATH = CONFIG_DIR / "config.toml"
+DB_DIR = Path(os.getenv("XDG_DATA_HOME", str(Path.home() / ".local/share"))) / "kbd"
 
 
 class ScanConfig(BaseSettings):
@@ -12,7 +17,12 @@ class ScanConfig(BaseSettings):
 
 
 class DBConfig(BaseSettings):
-    path: str = "kbd.db"
+    path: str = ""
+
+    def __init__(self, **data):
+        if not data.get("path"):
+            data["path"] = str(DB_DIR / "kbd.db")
+        super().__init__(**data)
 
 
 class UIConfig(BaseSettings):
@@ -26,9 +36,12 @@ class AppConfig(BaseSettings):
     ui: UIConfig = Field(default_factory=UIConfig)
 
     @classmethod
-    def from_toml(cls, path: Path = Path("config.toml")) -> "AppConfig":
+    def from_toml(cls, path: Path | None = None) -> "AppConfig":
+        if path is None:
+            path = CONFIG_PATH
         if not path.exists():
             return cls()
+        path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "rb") as f:
             data = tomllib.load(f)
         return cls(**{k: v for k, v in data.items() if k in cls.model_fields})

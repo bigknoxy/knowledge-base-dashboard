@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import typer
+from rich.console import Console
 
 app = typer.Typer(name="kbd", help="Knowledge Base Dashboard — your coding patterns, visualized.")
 
@@ -13,6 +14,38 @@ def _get_db_path() -> Path:
 
 
 @app.command()
+def init():
+    """Initialize kbd directories and default configuration."""
+    from core.config import CONFIG_DIR, CONFIG_PATH
+    from core.db import DB_DIR
+
+    console = Console()
+    DB_DIR.mkdir(parents=True, exist_ok=True)
+    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+
+    if not CONFIG_PATH.exists():
+        default_config = """[scan]
+paths = ["~/projects"]
+exclude = ["**/.venv/**", "**/node_modules/**"]
+max_depth = 5
+
+[database]
+path = ""
+
+[ui]
+theme = "dark"
+overview_repo_limit = 10
+"""
+        CONFIG_PATH.write_text(default_config)
+        console.print(f"[green]✓[/green] Created config: {CONFIG_PATH}")
+    else:
+        console.print(f"[blue]•[/blue] Config exists: {CONFIG_PATH}")
+
+    console.print(f"[green]✓[/green] Data dir: {DB_DIR}")
+    console.print("[green]✓[/green] Initialized!")
+
+
+@app.command()
 def scan(
     paths: list[str] | None = typer.Argument(None, help="Directories to scan"),
     db: str | None = typer.Option(None, "--db", help="Database path"),
@@ -20,9 +53,7 @@ def scan(
     """Scan git repositories and ingest experiment logs."""
     from datetime import datetime
 
-    from rich.console import Console
-
-    from core.config import AppConfig
+    from core.config import CONFIG_DIR, AppConfig
     from core.db import (
         create_tables,
         db_conn,
@@ -38,6 +69,7 @@ def scan(
     from core.pattern_engine import detect_patterns
 
     console = Console()
+    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     cfg = AppConfig.from_toml()
     db_path = Path(db) if db else Path(cfg.database.path)
     scan_paths = paths or cfg.scan.paths
