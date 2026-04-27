@@ -4,6 +4,19 @@
 
 ## Quick Start
 
+### One-liner Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bigknoxy/knowledge-base-dashboard/main/install.sh | sh
+```
+
+Then reload your shell:
+```bash
+source ~/.bashrc  # or ~/.zshrc if using zsh
+```
+
+### From Source
+
 ```bash
 # Install
 cd ~/projects/knowledge-base-dashboard
@@ -21,6 +34,12 @@ kbd health
 
 # Export HTML report
 kbd export --output report.html
+```
+
+### Uninstall
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bigknoxy/knowledge-base-dashboard/main/uninstall.sh | sh
 ```
 
 ## Features
