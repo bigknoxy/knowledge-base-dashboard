@@ -14,7 +14,7 @@ def _get_db_path() -> Path:
 
 
 @app.command()
-def init():
+def init() -> None:
     """Initialize kbd directories and default configuration."""
     from core.config import CONFIG_DIR, CONFIG_PATH
     from core.db import DB_DIR
@@ -49,7 +49,7 @@ overview_repo_limit = 10
 def scan(
     paths: list[str] | None = typer.Argument(None, help="Directories to scan"),
     db: str | None = typer.Option(None, "--db", help="Database path"),
-):
+) -> None:
     """Scan git repositories and ingest experiment logs."""
     from datetime import datetime
 
@@ -152,7 +152,7 @@ def scan(
 @app.command()
 def dashboard(
     db: str | None = typer.Option(None, "--db", help="Database path"),
-):
+) -> None:
     """Launch the interactive TUI dashboard."""
     from ui.dashboard import KBDApp
     db_path = db or str(_get_db_path())
@@ -162,7 +162,7 @@ def dashboard(
 @app.command()
 def health(
     db: str | None = typer.Option(None, "--db", help="Database path"),
-):
+) -> None:
     """Show database health and stats."""
     from rich.console import Console
 
@@ -191,7 +191,7 @@ def health(
 def export(
     output: str = typer.Option("exports/report.html", "--output", "-o"),
     db: str | None = typer.Option(None, "--db"),
-):
+) -> None:
     """Export dashboard data to an HTML report."""
     from rich.console import Console
 

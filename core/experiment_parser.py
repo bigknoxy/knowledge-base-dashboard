@@ -1,13 +1,14 @@
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from models.experiment import ExperimentRun, ExperimentSession
 
 
 def parse_jsonl(path: Path) -> list[ExperimentSession]:
     """Parse an autoresearch.jsonl file into ExperimentSession objects."""
-    sessions: dict[str, dict] = {}
+    sessions: dict[str, dict[str, Any]] = {}
 
     with open(path, encoding="utf-8") as f:
         for line_num, line in enumerate(f, 1):

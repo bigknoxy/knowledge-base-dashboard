@@ -1,6 +1,7 @@
 import os
 import tomllib
 from pathlib import Path
+from typing import Any
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -19,7 +20,7 @@ class ScanConfig(BaseSettings):
 class DBConfig(BaseSettings):
     path: str = ""
 
-    def __init__(self, **data):
+    def __init__(self, **data: Any) -> None:
         if not data.get("path"):
             data["path"] = str(DB_DIR / "kbd.db")
         super().__init__(**data)

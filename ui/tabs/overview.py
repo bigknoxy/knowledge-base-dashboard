@@ -22,7 +22,7 @@ class OverviewTab(Widget):
             from pathlib import Path as P
             db = P(self.db_path)
             if not db.exists():
-                self.query_one("#overview-content").update("No database found. Run: kbd scan")
+                self.query_one("#overview-content").update("No database found. Run: kbd scan")  # type: ignore[attr-defined]
                 return
             with db_conn(db) as conn:
                 repos = get_all_repos(conn)
@@ -42,6 +42,6 @@ class OverviewTab(Widget):
                 f"Pending insights: {len(insights)}\n\n"
                 f"[bold]Top Languages:[/bold]\n{lang_lines}"
             )
-            self.query_one("#overview-content").update(text)
+            self.query_one("#overview-content").update(text)  # type: ignore[attr-defined]
         except Exception as e:
-            self.query_one("#overview-content").update(f"Error: {e}")
+            self.query_one("#overview-content").update(f"Error: {e}")  # type: ignore[attr-defined]

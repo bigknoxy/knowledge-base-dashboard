@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -10,7 +10,7 @@ class ExperimentRun(BaseModel):
     status: Literal["keep", "discard", "crash", "checks_failed"]
     description: str
     commit: str | None = None
-    extra_metrics: dict = Field(default_factory=dict)
+    extra_metrics: dict[str, Any] = Field(default_factory=dict)
     duration_ms: int | None = None
     timestamp: datetime | None = None
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, Field, computed_field
 
@@ -18,15 +19,15 @@ class RepoModel(BaseModel):
     status: str = "active"
     scanned_at: datetime | None = None
 
-    @computed_field
     @property
+    @computed_field
     def is_active(self) -> bool:
         if not self.last_active:
             return False
         delta = datetime.utcnow() - self.last_active.replace(tzinfo=None)
         return delta.days < 90
 
-    def to_db_dict(self) -> dict:
+    def to_db_dict(self) -> dict[str, Any]:
         import json
         return {
             "id": self.id,

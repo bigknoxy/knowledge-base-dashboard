@@ -1,3 +1,5 @@
+from typing import Literal
+
 from models.insight import InsightModel
 from models.pattern import PatternModel
 
@@ -38,7 +40,7 @@ def generate_insights(patterns: list[PatternModel]) -> list[InsightModel]:
             )
 
         if pattern.frequency >= 5:
-            urgency = "high"
+            urgency: Literal["low", "medium", "high"] = "high"
         elif pattern.frequency >= 3:
             urgency = "medium"
         else:

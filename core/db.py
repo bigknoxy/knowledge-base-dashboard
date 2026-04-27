@@ -19,7 +19,7 @@ def get_connection(path: Path = DB_PATH) -> sqlite3.Connection:
 
 
 @contextmanager
-def db_conn(path: Path = DB_PATH):
+def db_conn(path: Path = DB_PATH) -> Any:
     conn = get_connection(path)
     try:
         yield conn
@@ -130,13 +130,13 @@ def get_all_repos(conn: sqlite3.Connection) -> list[sqlite3.Row]:
     return conn.execute("SELECT * FROM repos ORDER BY last_active DESC").fetchall()
 
 
-def get_repo(conn: sqlite3.Connection, repo_id: str) -> sqlite3.Row | None:
+def get_repo(conn: sqlite3.Connection, repo_id: str) -> Any:
     return conn.execute("SELECT * FROM repos WHERE id=?", (repo_id,)).fetchone()
 
 
 # --- Experiments CRUD ---
 
-def insert_experiment(conn: sqlite3.Connection, exp: dict[str, Any]) -> int:
+def insert_experiment(conn: sqlite3.Connection, exp: dict[str, Any]) -> Any:
     cur = conn.execute("""
         INSERT INTO experiments (repo_id, jsonl_path, session_name, metric_name, metric_unit,
             direction, total_runs, kept_runs, discarded_runs, crashed_runs,
@@ -160,7 +160,7 @@ def insert_run(conn: sqlite3.Connection, run: dict[str, Any]) -> None:
 # --- Patterns CRUD ---
 
 def upsert_pattern(conn: sqlite3.Connection, trigger: str, action: str,
-                   confidence: float) -> int:
+                   confidence: float) -> Any:
     existing = conn.execute(
         "SELECT id, frequency FROM patterns WHERE trigger=? AND action=?",
         (trigger, action)

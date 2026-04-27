@@ -21,7 +21,7 @@ class ExperimentsTab(Widget):
     def refresh_data(self) -> None:
         db = Path(self.db_path)
         if not db.exists():
-            self.query_one("#exp-content").update("No database. Run: kbd scan")
+            self.query_one("#exp-content").update("No database. Run: kbd scan")  # type: ignore[attr-defined]
             return
         with db_conn(db) as conn:
             exps = conn.execute(
@@ -29,7 +29,7 @@ class ExperimentsTab(Widget):
                 "FROM experiments ORDER BY completed_at DESC LIMIT 20"
             ).fetchall()
         if not exps:
-            self.query_one("#exp-content").update("No experiments found yet.")
+            self.query_one("#exp-content").update("No experiments found yet.")  # type: ignore[attr-defined]
             return
         lines = ["[bold]Recent Experiments[/bold]\n"]
         for e in exps:
@@ -37,4 +37,4 @@ class ExperimentsTab(Widget):
                 f"  {e['session_name']:<30} {e['metric_name']:<20} "
                 f"kept={e['kept_runs']}/{e['total_runs']} best={e['best_metric']}"
             )
-        self.query_one("#exp-content").update("\n".join(lines))
+        self.query_one("#exp-content").update("\n".join(lines))  # type: ignore[attr-defined]

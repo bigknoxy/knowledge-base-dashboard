@@ -21,7 +21,7 @@ class TimelineTab(Widget):
     def refresh_data(self) -> None:
         db = Path(self.db_path)
         if not db.exists():
-            self.query_one("#timeline-content").update("No database found.")
+            self.query_one("#timeline-content").update("No database found.")  # type: ignore[attr-defined]
             return
         with db_conn(db) as conn:
             rows = conn.execute("""
@@ -34,7 +34,7 @@ class TimelineTab(Widget):
                 LIMIT 30
             """).fetchall()
         if not rows:
-            self.query_one("#timeline-content").update("No timeline data yet.")
+            self.query_one("#timeline-content").update("No timeline data yet.")  # type: ignore[attr-defined]
             return
         lines = ["[bold]Activity Timeline (by month)[/bold]\n"]
         current_month = None
@@ -43,4 +43,4 @@ class TimelineTab(Widget):
                 current_month = row["month"]
                 lines.append(f"\n  [bold]{current_month}[/bold]")
             lines.append(f"    {row['primary_lang'] or 'Unknown':<15} {row['count']} repos")
-        self.query_one("#timeline-content").update("\n".join(lines))
+        self.query_one("#timeline-content").update("\n".join(lines))  # type: ignore[attr-defined]

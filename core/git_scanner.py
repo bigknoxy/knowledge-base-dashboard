@@ -80,7 +80,7 @@ def detect_stack(repo_path: Path) -> list[str]:
         manifest_path = repo_path / manifest
         if manifest_path.exists():
             content = manifest_path.read_text(errors="replace")
-            items = parser(content)
+            items = parser(content)  # type: ignore[no-untyped-call]
             for item in items:
                 if item not in stack:
                     stack.append(item)

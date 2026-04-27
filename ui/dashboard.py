@@ -9,7 +9,7 @@ from ui.tabs.repos import ReposTab
 from ui.tabs.timeline import TimelineTab
 
 
-class KBDApp(App):
+class KBDApp(App[None]):
     """Knowledge Base Dashboard — main TUI application."""
 
     CSS = """
