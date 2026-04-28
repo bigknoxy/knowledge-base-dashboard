@@ -142,6 +142,11 @@ install_kbd() {
             # All system installs failed - create a venv
             log "System install failed — creating virtual environment..."
             VENV_DIR="${HOME}/.venv/kbd"
+            # Clean up existing venv for idempotent reinstalls
+            if [ -d "${VENV_DIR}" ]; then
+                log "Removing existing virtual environment..."
+                rm -rf "${VENV_DIR}"
+            fi
             uv venv "${VENV_DIR}" 2>&1 || {
                 err "❌ Failed to create virtual environment at ${VENV_DIR}"
                 exit 1

@@ -9,6 +9,7 @@ NC='\033[0m'
 
 KBD_DIR="${HOME}/.local/share/kbd"
 KBD_BIN="${HOME}/.local/bin"
+KBD_VENV="${HOME}/.venv/kbd"
 PACKAGE_NAME="knowledge-base-dashboard"
 
 log()  { printf "${BLUE}%b${NC}\n" "$1"; }
@@ -57,7 +58,6 @@ uninstall_kbd() {
     fi
 
     # 2. Remove kbd binary/symlink
-    # Check both ~/.local/bin and /usr/local/bin (where --break-system-packages installs)
     _removed=0
     if [ -e "${KBD_BIN}/kbd" ] || [ -L "${KBD_BIN}/kbd" ]; then
         rm -f "${KBD_BIN}/kbd"
@@ -73,7 +73,17 @@ uninstall_kbd() {
         ok "✓ No kbd binary found — skipping"
     fi
 
-    # 3. Optional data cleanup
+    # 4. Remove virtual environment (if exists)
+    if [ -d "${KBD_VENV}" ]; then
+        if [ "$FORCE" -eq 1 ] || ask_yes "Remove ${KBD_VENV}/ (venv with broken install)?"; then
+            rm -rf "${KBD_VENV}"
+            ok "✓ Removed ${KBD_VENV}/"
+        fi
+    else
+        ok "✓ No ${KBD_VENV}/ directory — skipping"
+    fi
+
+    # 5. Optional data cleanup
     echo ""
     warn "Local data cleanup (optional):"
 
