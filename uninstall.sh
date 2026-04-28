@@ -48,8 +48,8 @@ uninstall_kbd() {
     if command -v uv > /dev/null 2>&1; then
         if uv pip show --system "${PACKAGE_NAME}" > /dev/null 2>&1; then
             log "Removing Python package..."
-            uv pip uninstall --system "${PACKAGE_NAME}" 2>/dev/null || \
-                uv pip uninstall -y "${PACKAGE_NAME}" 2>/dev/null || true
+            uv pip uninstall --system --break-system-packages "${PACKAGE_NAME}" 2>/dev/null || \
+                uv pip uninstall --system "${PACKAGE_NAME}" 2>/dev/null || true
             ok "✓ Removed Python package"
         else
             ok "✓ Package not installed via uv — skipping"
