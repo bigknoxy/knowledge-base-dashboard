@@ -27,6 +27,9 @@ dev = [
 [project.scripts]
 kbd = "cli.kbd:app"
 
+[tool.setuptools]
+py-modules = []
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
