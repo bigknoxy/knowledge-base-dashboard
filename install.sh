@@ -168,7 +168,7 @@ WRAPPER
             chmod +x "${HOME}/.local/bin/kbd"
             KBD_BIN="${HOME}/.local/bin"
             # Add to PATH if needed
-            if [ -d "${KBD_BIN}" ] && [[ ":${PATH}:" != *":${KBD_BIN}:"* ]]; then
+            if [ -d "${KBD_BIN}" ] && [ "${PATH#*:${KBD_BIN}:}" = "$PATH" ]; then
                 export PATH="${KBD_BIN}:${PATH}"
             fi
             log "Installed in virtual environment at ${VENV_DIR}"
