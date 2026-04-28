@@ -28,7 +28,10 @@ dev = [
 kbd = "cli.kbd:app"
 
 [tool.setuptools]
-packages = find_packages(include=["cli", "core", "models", "export", "ui*"])
+packages = "find"
+
+[tool.setuptools.find]
+include = ["cli*", "core*", "models*", "export*", "ui*"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
