@@ -117,22 +117,25 @@ install_kbd() {
         ALREADY_INSTALLED=1
     fi
 
+    # Install from GitHub (not on PyPI)
+    INSTALL_URL="git+${GITHUB_REPO}.git"
+
     if [ "$DRY_RUN" -eq 0 ]; then
         if [ "$ALREADY_INSTALLED" -eq 1 ]; then
             log "Updating ${PACKAGE_NAME}..."
         else
             log "Installing ${PACKAGE_NAME}..."
         fi
-        uv pip install --system "${PACKAGE_NAME}" 2>&1 || {
+        uv pip install --system "${INSTALL_URL}" 2>&1 || {
             err "❌ Installation failed. Trying with --break-system-packages..."
-            uv pip install --system --break-system-packages "${PACKAGE_NAME}" 2>&1 || {
+            uv pip install --system --break-system-packages "${INSTALL_URL}" 2>&1 || {
                 err "❌ Installation failed. Try running:"
-                err "   uv pip install --system ${PACKAGE_NAME}"
+                err "   uv pip install --system ${INSTALL_URL}"
                 exit 1
             }
         }
     else
-        echo "  uv pip install --system ${PACKAGE_NAME}"
+        echo "  uv pip install --system ${INSTALL_URL}"
     fi
 
     if [ "$ALREADY_INSTALLED" -eq 1 ]; then
