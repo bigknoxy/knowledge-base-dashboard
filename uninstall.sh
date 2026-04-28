@@ -105,7 +105,7 @@ uninstall_kbd() {
     echo ""
     ok "✓ Uninstall complete"
     echo "To reinstall:"
-    echo "  ${BLUE}curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/main/install.sh | sh${NC}"
+    echo "  ${BLUE}curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/refs/heads/main/install.sh | sh${NC}"
 }
 
 uninstall_kbd "$@"

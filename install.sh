@@ -184,7 +184,7 @@ install_kbd() {
     echo "  ${BLUE}kbd --help${NC}              # see all commands"
     echo ""
     echo "To uninstall:"
-    echo "  ${BLUE}curl -fsSL ${GITHUB_REPO}/raw/main/uninstall.sh | sh${NC}"
+    echo "  ${BLUE}curl -fsSL ${GITHUB_REPO}/raw/refs/heads/main/uninstall.sh | sh${NC}"
     echo ""
     echo "Re-run anytime to update — this script is idempotent."
 }
