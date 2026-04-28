@@ -13,11 +13,8 @@ class KBDApp(App[None]):
     """Knowledge Base Dashboard — main TUI application."""
 
     CSS = """
-    Screen {
-        background: $surface;
-    }
     TabbedContent {
-        height: 1fr;
+        height: 100%;
     }
     """
 

@@ -1,19 +1,14 @@
 from pathlib import Path
 
-from textual.app import ComposeResult
-from textual.widget import Widget
 from textual.widgets import Static
 
 from core.db import db_conn, get_all_patterns, get_pending_insights
 
 
-class PatternsTab(Widget):
+class PatternsTab(Static):
     def __init__(self, db_path: str = "kbd.db"):
-        super().__init__()
+        super().__init__("")
         self.db_path = db_path
-
-    def compose(self) -> ComposeResult:
-        yield Static("", id="patterns-content")
 
     def on_mount(self) -> None:
         self.refresh_data()
@@ -21,7 +16,7 @@ class PatternsTab(Widget):
     def refresh_data(self) -> None:
         db = Path(self.db_path)
         if not db.exists():
-            self.query_one("#patterns-content").update("No database found.")  # type: ignore[attr-defined]
+            self.update("No database found.")
             return
         with db_conn(db) as conn:
             patterns = get_all_patterns(conn)
@@ -33,4 +28,4 @@ class PatternsTab(Widget):
             lines.append(f"\n[bold]Pending Suggestions ({len(insights)})[/bold]\n")
             for i in insights[:5]:
                 lines.append(f"  [{i['urgency'].upper()}] {i['suggestion'][:80]}")
-        self.query_one("#patterns-content").update("\n".join(lines))  # type: ignore[attr-defined]
+        self.update("\n".join(lines))
