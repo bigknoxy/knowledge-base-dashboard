@@ -9,7 +9,7 @@
 
 | Item | Value |
 |------|-------|
-| Language | Python 3.12+ |
+| Language | Python 3.10+ |
 | Package manager | `uv` |
 | Test runner | `pytest` |
 | Linter | `ruff` |

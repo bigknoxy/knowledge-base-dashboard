@@ -75,7 +75,7 @@ install_kbd() {
     # ── 1. Python check ──────────────────────────────────────────────
     if [ "$SKIP_PY_CHECK" -eq 0 ]; then
         if ! command -v python3 > /dev/null 2>&1; then
-            err "❌ Python 3 not found. Please install Python 3.12 or later."
+            err "❌ Python 3 not found. Please install Python 3.10 or later."
             err "   https://www.python.org/downloads/"
             exit 1
         fi
@@ -83,8 +83,8 @@ install_kbd() {
         PY_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')
         PY_MAJOR_MINOR=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 
-        if ! version_gte "$PY_MAJOR_MINOR" "3.12"; then
-            err "❌ Python 3.12+ required, found ${PY_VERSION}."
+        if ! version_gte "$PY_MAJOR_MINOR" "3.10"; then
+            err "❌ Python 3.10+ required, found ${PY_VERSION}."
             err "   https://www.python.org/downloads/"
             exit 1
         fi

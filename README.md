@@ -69,13 +69,13 @@ Required test coverage of 40% reached. Total coverage: 41.98%
 
 ```
 $ curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/refs/heads/main/install.sh | sh
-✓ Python 3.12 found
+✓ Python 3.10 found
 ✓ uv found
 Installing knowledge-base-dashboard...
 ✓ Installation complete!
 ```
 
-(On systems with Python 3.12+. Install script exits cleanly if requirements aren't met.)
+(On systems with Python 3.10+. Install script exits cleanly if requirements aren't met.)
 
 ---
 

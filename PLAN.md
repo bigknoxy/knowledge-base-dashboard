@@ -21,7 +21,7 @@ This becomes your personal "second brain" for engineering decisions.
 
 | Layer | Choice | Why |
 |-------|--------|-----|
-| Runtime | Python 3.12+ | Rich ecosystem for data science + TUI |
+| Runtime | Python 3.10+ | Rich ecosystem for data science + TUI |
 | TUI Framework | **Textual** (Python) | Modern reactive terminal UI, built-in widgets, theming |
 | Git Analysis | `gitpython` + raw `git log` plumbing | Parse commits, diffs, author stats, timelines |
 | Data Model | `pydantic` models + `sqlite3` | Schema-validated records, fast queries |
