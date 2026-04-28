@@ -17,7 +17,10 @@ warn() { printf "${YELLOW}%b${NC}\n" "$1"; }
 err()  { printf "${RED}%b${NC}\n" "$1"; }
 
 version_gte() {
-    printf '%s\n%s\n' "$1" "$2" | sort -V | head -n1 | grep -q "^$1$"
+    # Returns true if user version ($1) >= required ($2)
+    # Using sort -V: if required is smallest, user has required or better
+    _min="$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -n1)"
+    [ "$_min" = "$2" ]
 }
 
 detect_shell_rc() {
@@ -80,7 +83,7 @@ install_kbd() {
         PY_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')
         PY_MAJOR_MINOR=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 
-        if ! version_gte "3.12" "$PY_MAJOR_MINOR"; then
+        if ! version_gte "$PY_MAJOR_MINOR" "3.12"; then
             err "❌ Python 3.12+ required, found ${PY_VERSION}."
             err "   https://www.python.org/downloads/"
             exit 1
