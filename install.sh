@@ -129,17 +129,60 @@ install_kbd() {
         else
             log "Installing ${PACKAGE_NAME}..."
         fi
-        # Try system install first, then --break-system-packages, then --user
+
+        # Try multiple install methods
+        INSTALL_METHOD=""
         if uv pip install --system "${INSTALL_URL}" 2>&1; then
-            :  # success
+            INSTALL_METHOD="system"
         elif uv pip install --system --break-system-packages "${INSTALL_URL}" 2>&1; then
-            :  # success with break-system-packages
+            INSTALL_METHOD="break-system-packages"
         elif uv pip install --user "${INSTALL_URL}" 2>&1; then
-            log "Installed to user directory (~/.local)"
+            INSTALL_METHOD="user"
         else
-            err "❌ Installation failed. Try running:"
-            err "   uv pip install --user ${INSTALL_URL}"
-            exit 1
+            # All system installs failed - create a venv
+            log "System install failed — creating virtual environment..."
+            VENV_DIR="${HOME}/.venv/kbd"
+            uv venv "${VENV_DIR}" 2>&1 || {
+                err "❌ Failed to create virtual environment at ${VENV_DIR}"
+                exit 1
+            }
+            # shellcheck disable=SC1090
+            . "${VENV_DIR}/bin/activate"
+            uv pip install "${INSTALL_URL}" 2>&1 || {
+                err "❌ Failed to install in virtual environment"
+                exit 1
+            }
+            # Create wrapper script that activates venv
+            mkdir -p "${HOME}/.local/bin"
+            cat > "${HOME}/.local/bin/kbd" << 'WRAPPER'
+#!/bin/bash
+# Auto-generated wrapper for knowledge-base-dashboard
+if [ -f "$HOME/.venv/kbd/bin/activate" ]; then
+    . "$HOME/.venv/kbd/bin/activate"
+    exec kbd "$@"
+else
+    echo "Virtual environment not found. Re-run install script."
+    exit 1
+fi
+WRAPPER
+            chmod +x "${HOME}/.local/bin/kbd"
+            KBD_BIN="${HOME}/.local/bin"
+            # Add to PATH if needed
+            if [ -d "${KBD_BIN}" ] && [[ ":${PATH}:" != *":${KBD_BIN}:"* ]]; then
+                export PATH="${KBD_BIN}:${PATH}"
+            fi
+            log "Installed in virtual environment at ${VENV_DIR}"
+            # Set flag to skip PATH setup since we already handled it
+            SKIP_PATH_SETUP=1
+            ok "✓ ${PACKAGE_NAME} installed in virtual environment"
+        fi
+
+        if [ -n "$INSTALL_METHOD" ]; then
+            case "$INSTALL_METHOD" in
+                system)       ok "✓ ${PACKAGE_NAME} installed (system)" ;;
+                break-system-packages) ok "✓ ${PACKAGE_NAME} installed (break-system-packages)" ;;
+                user)        ok "✓ ${PACKAGE_NAME} installed (~/.local)" ;;
+            esac
         fi
     else
         echo "  uv pip install --system ${INSTALL_URL}"
