@@ -1,59 +1,111 @@
 #!/usr/bin/env sh
 set -e
 
-# Color codes for output
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-KBD_BIN="${HOME}/.local/bin/kbd"
+KBD_DIR="${HOME}/.local/share/kbd"
+KBD_BIN="${HOME}/.local/bin"
 PACKAGE_NAME="knowledge-base-dashboard"
 
+log()  { printf "${BLUE}%b${NC}\n" "$1"; }
+ok()   { printf "${GREEN}%b${NC}\n" "$1"; }
+warn() { printf "${YELLOW}%b${NC}\n" "$1"; }
+err()  { printf "${RED}%b${NC}\n" "$1"; }
+
+ask_yes() {
+    _prompt="$1"
+    if [ -t 0 ]; then
+        printf "${YELLOW}%b (y/N) ${NC}" "$_prompt"
+        read -r _answer
+    else
+        _answer="n"
+    fi
+    [ "$_answer" = "y" ] || [ "$_answer" = "Y" ]
+}
+
 uninstall_kbd() {
-  echo "${BLUE}Uninstalling ${PACKAGE_NAME}...${NC}"
+    FORCE=0
+    for arg in "$@"; do
+        case "$arg" in
+            --force|-y) FORCE=1 ;;
+            --help|-h)
+                echo "Usage: uninstall.sh [--force] [--help]"
+                echo ""
+                echo "  --force   Skip confirmation prompts"
+                echo "  --help    Show this help"
+                exit 0
+                ;;
+        esac
+    done
 
-  # 1. Remove kbd symlink/binary
-  if [ -e "${KBD_BIN}" ] || [ -L "${KBD_BIN}" ]; then
-    rm -f "${KBD_BIN}"
-    echo "${GREEN}✓ Removed ${KBD_BIN}${NC}"
-  fi
+    log "Uninstalling ${PACKAGE_NAME}..."
 
-  # 2. Remove package via uv if available
-  if command -v uv &> /dev/null; then
-    echo "${BLUE}Removing Python package...${NC}"
-    uv pip uninstall -y "${PACKAGE_NAME}" || true
-    echo "${GREEN}✓ Removed Python package${NC}"
-  fi
+    # 1. Remove package via uv
+    if command -v uv > /dev/null 2>&1; then
+        if uv pip show --system "${PACKAGE_NAME}" > /dev/null 2>&1; then
+            log "Removing Python package..."
+            uv pip uninstall --system "${PACKAGE_NAME}" 2>/dev/null || \
+                uv pip uninstall -y "${PACKAGE_NAME}" 2>/dev/null || true
+            ok "✓ Removed Python package"
+        else
+            ok "✓ Package not installed via uv — skipping"
+        fi
+    else
+        warn "⚠ uv not found — cannot uninstall Python package automatically"
+    fi
 
-  # 3. Offer to remove local data
-  echo ""
-  echo "${YELLOW}Local data cleanup (optional):${NC}"
+    # 2. Remove kbd binary/symlink
+    if [ -e "${KBD_BIN}/kbd" ] || [ -L "${KBD_BIN}/kbd" ]; then
+        rm -f "${KBD_BIN}/kbd"
+        ok "✓ Removed ${KBD_BIN}/kbd"
+    else
+        ok "✓ No kbd binary found — skipping"
+    fi
 
-  read -p "Remove ~/.local/share/kbd/ ? (y/N) " -r
-  if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
-    rm -rf "${HOME}/.local/share/kbd"
-    echo "${GREEN}✓ Removed ~/.local/share/kbd/${NC}"
-  fi
+    # 3. Optional data cleanup
+    echo ""
+    warn "Local data cleanup (optional):"
 
-  read -p "Remove kbd.db and config.toml from current directory ? (y/N) " -r
-  if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
-    rm -f kbd.db config.toml
-    echo "${GREEN}✓ Removed local kbd.db and config.toml${NC}"
-  fi
+    if [ -d "${KBD_DIR}" ]; then
+        if [ "$FORCE" -eq 1 ] || ask_yes "Remove ${KBD_DIR}/ ?"; then
+            rm -rf "${KBD_DIR}"
+            ok "✓ Removed ${KBD_DIR}/"
+        fi
+    else
+        ok "✓ No ${KBD_DIR}/ directory — skipping"
+    fi
 
-  # 4. Ask about config cleanup
-  read -p "Remove ~/.config/kbd/ (all user config)? (y/N) " -r
-  if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
-    rm -rf "${HOME}/.config/kbd"
-    echo "${GREEN}✓ Removed ~/.config/kbd/${NC}"
-  fi
+    if [ -f "kbd.db" ]; then
+        if [ "$FORCE" -eq 1 ] || ask_yes "Remove kbd.db from current directory?"; then
+            rm -f kbd.db
+            ok "✓ Removed kbd.db"
+        fi
+    fi
 
-  echo ""
-  echo "${GREEN}✓ Uninstall complete${NC}"
-  echo "To reinstall:"
-  echo "  ${BLUE}curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/main/install.sh | sh${NC}"
+    if [ -f "config.toml" ]; then
+        if [ "$FORCE" -eq 1 ] || ask_yes "Remove config.toml from current directory?"; then
+            rm -f config.toml
+            ok "✓ Removed config.toml"
+        fi
+    fi
+
+    if [ -d "${HOME}/.config/kbd" ]; then
+        if [ "$FORCE" -eq 1 ] || ask_yes "Remove ~/.config/kbd/ (all user config)?"; then
+            rm -rf "${HOME}/.config/kbd"
+            ok "✓ Removed ~/.config/kbd/"
+        fi
+    else
+        ok "✓ No ~/.config/kbd/ directory — skipping"
+    fi
+
+    echo ""
+    ok "✓ Uninstall complete"
+    echo "To reinstall:"
+    echo "  ${BLUE}curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/main/install.sh | sh${NC}"
 }
 
 uninstall_kbd "$@"
