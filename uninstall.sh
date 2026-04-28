@@ -59,10 +59,19 @@ uninstall_kbd() {
     fi
 
     # 2. Remove kbd binary/symlink
+    # Check both ~/.local/bin and /usr/local/bin (where --break-system-packages installs)
+    _removed=0
     if [ -e "${KBD_BIN}/kbd" ] || [ -L "${KBD_BIN}/kbd" ]; then
         rm -f "${KBD_BIN}/kbd"
         ok "✓ Removed ${KBD_BIN}/kbd"
-    else
+        _removed=1
+    fi
+    if [ -e "/usr/local/bin/kbd" ] || [ -L "/usr/local/bin/kbd" ]; then
+        rm -f /usr/local/bin/kbd
+        ok "✓ Removed /usr/local/bin/kbd"
+        _removed=1
+    fi
+    if [ "$_removed" -eq 0 ]; then
         ok "✓ No kbd binary found — skipping"
     fi
 
