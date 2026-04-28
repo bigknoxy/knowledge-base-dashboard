@@ -129,14 +129,18 @@ install_kbd() {
         else
             log "Installing ${PACKAGE_NAME}..."
         fi
-        uv pip install --system "${INSTALL_URL}" 2>&1 || {
-            err "❌ Installation failed. Trying with --break-system-packages..."
-            uv pip install --system --break-system-packages "${INSTALL_URL}" 2>&1 || {
-                err "❌ Installation failed. Try running:"
-                err "   uv pip install --system ${INSTALL_URL}"
-                exit 1
-            }
-        }
+        # Try system install first, then --break-system-packages, then --user
+        if uv pip install --system "${INSTALL_URL}" 2>&1; then
+            :  # success
+        elif uv pip install --system --break-system-packages "${INSTALL_URL}" 2>&1; then
+            :  # success with break-system-packages
+        elif uv pip install --user "${INSTALL_URL}" 2>&1; then
+            log "Installed to user directory (~/.local)"
+        else
+            err "❌ Installation failed. Try running:"
+            err "   uv pip install --user ${INSTALL_URL}"
+            exit 1
+        fi
     else
         echo "  uv pip install --system ${INSTALL_URL}"
     fi

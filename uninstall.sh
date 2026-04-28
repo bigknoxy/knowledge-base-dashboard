@@ -46,14 +46,12 @@ uninstall_kbd() {
 
     # 1. Remove package via uv
     if command -v uv > /dev/null 2>&1; then
-        if uv pip show --system "${PACKAGE_NAME}" > /dev/null 2>&1; then
-            log "Removing Python package..."
-            uv pip uninstall --system --break-system-packages "${PACKAGE_NAME}" 2>/dev/null || \
-                uv pip uninstall --system "${PACKAGE_NAME}" 2>/dev/null || true
-            ok "✓ Removed Python package"
-        else
-            ok "✓ Package not installed via uv — skipping"
-        fi
+        log "Removing Python package..."
+        # Try multiple uninstall methods
+        uv pip uninstall --system --break-system-packages "${PACKAGE_NAME}" 2>/dev/null || \
+        uv pip uninstall --system "${PACKAGE_NAME}" 2>/dev/null || \
+        uv pip uninstall --user "${PACKAGE_NAME}" 2>/dev/null || true
+        ok "✓ Removed Python package"
     else
         warn "⚠ uv not found — cannot uninstall Python package automatically"
     fi
