@@ -37,6 +37,15 @@ def _run_git(args: list[str], cwd: Path) -> str:
     return result.stdout.strip() if result.returncode == 0 else ""
 
 
+def _parse_git_iso_datetime(date_str: str | None) -> datetime | None:
+    if not date_str:
+        return None
+    try:
+        return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+    except (ValueError, TypeError):
+        return None
+
+
 def _parse_npm_stack(content: str) -> list[str]:
     try:
         data = json.loads(content)
@@ -101,8 +110,8 @@ def scan_repo(path: Path) -> RepoModel | None:
         total_str = _run_git(["rev-list", "--count", "HEAD"], path)
         branch_str = _run_git(["branch", "--list"], path)
 
-        first_commit = datetime.fromisoformat(first_commit_str) if first_commit_str else None
-        last_commit = datetime.fromisoformat(last_commit_str) if last_commit_str else None
+        first_commit = _parse_git_iso_datetime(first_commit_str)
+        last_commit = _parse_git_iso_datetime(last_commit_str)
         total_commits = int(total_str) if total_str.isdigit() else 0
         branch_count = len([b for b in branch_str.splitlines() if b.strip()])
 
@@ -138,10 +147,7 @@ def scan_repo(path: Path) -> RepoModel | None:
             status="active",
             scanned_at=datetime.now(timezone.utc),
         )
-    except Exception as e:
-        import traceback
-        print(f"ERROR in scan_repo({path}): {type(e).__name__}: {e}")
-        traceback.print_exc()
+    except Exception:
         return None
 
 
