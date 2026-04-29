@@ -12,6 +12,7 @@ KBD_BIN="${HOME}/.local/bin"
 PACKAGE_NAME="knowledge-base-dashboard"
 GITHUB_REPO="https://github.com/bigknoxy/knowledge-base-dashboard"
 INSTALL_SOURCE="${KBD_INSTALL_SOURCE:-git}"
+RELEASE_TAG="${KBD_RELEASE_TAG:-v0.1.1}"
 
 install_kbd() {
   DRY_RUN=0
@@ -41,15 +42,15 @@ install_kbd() {
       ;;
   esac
 
-  # 1. Check Python 3.12+
+  # 1. Check Python 3.10+
   if ! command -v python3 > /dev/null 2>&1; then
-    printf '%b\n' "${RED}❌ Python 3 not found. Please install Python 3.12 or later.${NC}" >&2
+    printf '%b\n' "${RED}❌ Python 3 not found. Please install Python 3.10 or later.${NC}" >&2
     exit 1
   fi
 
   PY_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' 2> /dev/null || echo "0.0")
-  if [ "$(printf '%s\n' "3.12" "$PY_VERSION" | sort -V | head -n1)" != "3.12" ]; then
-    printf '%b\n' "${RED}❌ Python 3.12+ required, found $PY_VERSION.${NC}" >&2
+  if [ "$(printf '%s\n' "3.10" "$PY_VERSION" | sort -V | head -n1)" != "3.10" ]; then
+    printf '%b\n' "${RED}❌ Python 3.10+ required, found $PY_VERSION.${NC}" >&2
     exit 1
   fi
   printf '%b\n' "${GREEN}✓ Python ${PY_VERSION} found${NC}"
@@ -93,7 +94,7 @@ install_kbd() {
 
   INSTALL_CMD=""
   if [ "$INSTALL_SOURCE" = "git" ]; then
-    INSTALL_CMD="uv tool install git+${GITHUB_REPO}.git"
+    INSTALL_CMD="uv tool install git+${GITHUB_REPO}.git@${RELEASE_TAG}"
   else
     INSTALL_CMD="uv tool install ${PACKAGE_NAME}"
   fi

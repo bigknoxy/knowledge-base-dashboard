@@ -3,6 +3,21 @@ name = "knowledge-base-dashboard"
 version = "0.1.1"
 description = "Interactive TUI dashboard for git history and experiment analytics"
 requires-python = ">=3.10"
+license = {text = "MIT"}
+readme = "README.md"
+keywords = ["cli", "git", "tui", "dashboard", "analytics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Topic :: Utilities",
+]
 dependencies = [
     "textual>=0.55.0",
     "gitpython>=3.1.40",
@@ -15,6 +30,15 @@ dependencies = [
     "tomli>=2.0.1",
 ]
 
+[[project.authors]]
+name = "Joshua Knox"
+email = "joshua.knox@fhlbtopeka.com"
+
+[project.urls]
+Homepage = "https://github.com/bigknoxy/knowledge-base-dashboard"
+Repository = "https://github.com/bigknoxy/knowledge-base-dashboard"
+"Bug Tracker" = "https://github.com/bigknoxy/knowledge-base-dashboard/issues"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.1.0",
@@ -23,6 +47,10 @@ dev = [
     "ruff>=0.4.0",
     "mypy>=1.9.0",
 ]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
 
 [project.scripts]
 kbd = "cli.kbd:app"
