@@ -11,12 +11,17 @@ fi
 KBD_BIN="${HOME}/.local/bin"
 PACKAGE_NAME="knowledge-base-dashboard"
 GITHUB_REPO="https://github.com/bigknoxy/knowledge-base-dashboard"
+INSTALL_SOURCE="${KBD_INSTALL_SOURCE:-git}"
 
 install_kbd() {
   DRY_RUN=0
   if [ "$1" = "--dry-run" ]; then
     DRY_RUN=1
     printf '%b\n' "${YELLOW}[DRY RUN] Would execute:${NC}"
+  fi
+
+  if [ "$1" = "--pypi" ] || [ "$2" = "--pypi" ]; then
+    INSTALL_SOURCE="pypi"
   fi
 
   # Detect OS (warn if Windows)
@@ -58,15 +63,25 @@ install_kbd() {
     printf '%b\n' "${GREEN}✓ uv found${NC}"
   fi
 
-  # 3. Install kbd package
+  # 3. Install kbd package (uv tool install handles venv isolation)
   printf '%b\n' "${BLUE}Installing ${PACKAGE_NAME}...${NC}"
+  INSTALL_CMD=""
+  if [ "$INSTALL_SOURCE" = "git" ]; then
+    INSTALL_CMD="uv tool install git+${GITHUB_REPO}.git"
+  else
+    INSTALL_CMD="uv tool install ${PACKAGE_NAME}"
+  fi
+
   if [ "$DRY_RUN" -eq 0 ]; then
-    if ! uv pip install --system "${PACKAGE_NAME}" > /dev/null 2>&1; then
-      printf '%b\n' "${RED}❌ Failed to install ${PACKAGE_NAME}. Check PyPI availability.${NC}" >&2
+    if ! eval "$INSTALL_CMD" > /dev/null 2>&1; then
+      printf '%b\n' "${RED}❌ Failed to install ${PACKAGE_NAME}.${NC}" >&2
+      if [ "$INSTALL_SOURCE" = "git" ]; then
+        printf '%b\n' "${YELLOW}Try: curl -fsSL ... | sh --pypi${NC}" >&2
+      fi
       exit 1
     fi
   else
-    printf '%b\n' "  uv pip install --system ${PACKAGE_NAME}"
+    printf '%b\n' "  $INSTALL_CMD"
   fi
 
   # 4. Detect shell and update PATH

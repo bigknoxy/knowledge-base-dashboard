@@ -25,17 +25,17 @@ prompt_yes_no() {
 uninstall_kbd() {
   printf '%b\n' "${BLUE}Uninstalling ${PACKAGE_NAME}...${NC}"
 
-  # 1. Remove binary
-  if [ -e "$KBD_BIN" ] || [ -L "$KBD_BIN" ]; then
-    rm -f "$KBD_BIN" 2> /dev/null || true
-    printf '%b\n' "${GREEN}✓ Removed $KBD_BIN${NC}"
-  fi
-
-  # 2. Remove Python package
+  # 1. Remove via uv tool (handles venv cleanup)
   if command -v uv > /dev/null 2>&1; then
     printf '%b\n' "${BLUE}Removing Python package...${NC}"
-    uv pip uninstall -y "$PACKAGE_NAME" > /dev/null 2>&1 || true
-    printf '%b\n' "${GREEN}✓ Removed Python package${NC}"
+    uv tool uninstall "$PACKAGE_NAME" 2> /dev/null || true
+    printf '%b\n' "${GREEN}✓ Removed ${PACKAGE_NAME}${NC}"
+  fi
+
+  # 2. Clean up any remaining binaries
+  if [ -e "$KBD_BIN" ] || [ -L "$KBD_BIN" ]; then
+    rm -f "$KBD_BIN" 2> /dev/null || true
+    printf '%b\n' "${GREEN}✓ Cleaned up binary${NC}"
   fi
 
   # 3. Interactive cleanup (skip if non-interactive)
