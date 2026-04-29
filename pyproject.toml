@@ -1,8 +1,8 @@
 [project]
 name = "knowledge-base-dashboard"
-version = "0.1.0"
+version = "0.1.1"
 description = "Interactive TUI dashboard for git history and experiment analytics"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "textual>=0.55.0",
     "gitpython>=3.1.40",
@@ -28,7 +28,15 @@ dev = [
 kbd = "cli.kbd:app"
 
 [tool.setuptools]
-packages = ["cli", "core", "models", "ui", "export"]
+packages = [
+    "cli",
+    "core",
+    "models",
+    "ui",
+    "ui.tabs",
+    "ui.components",
+    "export",
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -36,12 +44,12 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.10"
 strict = true
 ignore_missing_imports = true

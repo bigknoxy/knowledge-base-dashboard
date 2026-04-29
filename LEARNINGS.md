@@ -43,6 +43,64 @@ Always normalize: `.replace("Z", "+00:00")` before `fromisoformat()`.
 
 *No task learnings yet — add them as you work.*
 
+---
+
+## Learning 001 — 2026-04-28: Python 3.12+ blocker fixed
+
+**Problem:** Install script failed on systems with Python 3.11.2 (found on user's system and this container).
+Error: `❌ Python 3.12+ required, found 3.11.2.`
+
+**Root cause:** 
+1. `pyproject.toml` declared `requires-python = ">=3.12"` — enforced by uv during installation
+2. `install.sh` checked for Python 3.12 minimum
+3. No Python 3.12-specific syntax was actually used in the codebase
+
+**Fix:**
+- Changed `pyproject.toml`: `requires-python = ">=3.12"` → `">=3.10"`
+- Changed `install.sh`: version check from `3.12` to `3.10`
+- Updated ruff `target-version` and mypy `python_version` to 3.10
+- Updated CI workflow to test Python 3.10, 3.11
+- Updated docs (AGENTS.md, PLAN.md, README.md)
+
+**Prevention:** Always verify actual Python version requirements match declared requirements. Check dependency compatibility before setting minimum version.
+
+---
+
+## Learning 002 — 2026-04-28: Externally-managed Python environments
+
+**Problem:** `uv pip install --system` fails on Debian/Ubuntu with externally-managed Python.
+Error: `The interpreter at /usr is externally managed`
+
+**Root cause:** PEP 668 protection on Debian-based systems
+
+**Fix:** Install script now falls back to `--break-system-packages` flag
+
+**Prevention:** Test install on both managed and unmanaged Python environments.
+
+---
+
+## Learning 003 — 2026-04-28: Uninstall missed /usr/local/bin
+
+**Problem:** Uninstall script didn't remove binary installed to `/usr/local/bin/kbd`
+
+**Root cause:** Install uses `--break-system-packages` which installs to `/usr/local/bin`, but uninstall only checked `~/.local/bin`
+
+**Fix:** Updated uninstall.sh to check both `~/.local/bin` and `/usr/local/bin`
+
+**Prevention:** Track where binaries are actually installed, not just expected locations.
+
+---
+
+## Learning 004 — 2026-04-28: GitHub raw URL caching
+
+**Problem:** Testing `raw/refs/heads/main` URL sometimes returns stale cached content
+
+**Root cause:** GitHub caches raw URLs; need specific commit hash for fresh content
+
+**Fix:** Use `raw.githubusercontent.com` instead of `github.com/raw` for fresher content, or specific commit hash
+
+**Prevention:** When testing install/uninstall, use direct raw URL with commit hash.
+
 ## Completed: ALL 20 TASKS (2026-04-26)
 
 ### Implementation Summary

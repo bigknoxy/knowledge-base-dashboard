@@ -68,14 +68,14 @@ Required test coverage of 40% reached. Total coverage: 41.98%
 ### Installer (one-liner, idempotent)
 
 ```
-$ curl -fsSL https://raw.githubusercontent.com/bigknoxy/knowledge-base-dashboard/main/install.sh | sh
-✓ Python 3.12 found
+$ curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/refs/heads/main/install.sh | sh
+✓ Python 3.10 found
 ✓ uv found
 Installing knowledge-base-dashboard...
 ✓ Installation complete!
 ```
 
-(On systems with Python 3.12+. Install script exits cleanly if requirements aren't met.)
+(On systems with Python 3.10+. Install script exits cleanly if requirements aren't met.)
 
 ---
 
@@ -84,7 +84,7 @@ Installing knowledge-base-dashboard...
 ### 1. Install (30 seconds)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/bigknoxy/knowledge-base-dashboard/main/install.sh | sh
+curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/refs/heads/main/install.sh | sh
 source ~/.bashrc  # or ~/.zshrc if using zsh
 ```
 
@@ -268,7 +268,7 @@ All tests must pass and linting must be clean before pushing.
 ## Uninstall
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/bigknoxy/knowledge-base-dashboard/main/uninstall.sh | sh
+curl -fsSL https://github.com/bigknoxy/knowledge-base-dashboard/raw/refs/heads/main/uninstall.sh | sh
 ```
 
 Removes the `kbd` binary and offers to clean up your data (`~/.local/share/kbd/`, `~/.config/kbd/`).

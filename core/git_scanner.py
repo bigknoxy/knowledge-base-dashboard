@@ -1,7 +1,7 @@
 import hashlib
 import json
 import subprocess
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from models.repo import RepoModel
@@ -136,7 +136,7 @@ def scan_repo(path: Path) -> RepoModel | None:
             primary_lang=primary_lang,
             stack=stack,
             status="active",
-            scanned_at=datetime.utcnow(),
+            scanned_at=datetime.now(UTC),
         )
     except Exception:
         return None
