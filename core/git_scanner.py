@@ -138,7 +138,10 @@ def scan_repo(path: Path) -> RepoModel | None:
             status="active",
             scanned_at=datetime.now(timezone.utc),
         )
-    except Exception:
+    except Exception as e:
+        import traceback
+        print(f"ERROR in scan_repo({path}): {type(e).__name__}: {e}")
+        traceback.print_exc()
         return None
 
 
