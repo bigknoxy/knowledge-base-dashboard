@@ -12,7 +12,7 @@ KBD_BIN="${HOME}/.local/bin"
 PACKAGE_NAME="knowledge-base-dashboard"
 GITHUB_REPO="https://github.com/bigknoxy/knowledge-base-dashboard"
 INSTALL_SOURCE="${KBD_INSTALL_SOURCE:-git}"
-RELEASE_TAG="${KBD_RELEASE_TAG:-v0.1.1}"
+RELEASE_TAG="${KBD_RELEASE_TAG:-v0.1.2}"
 
 install_kbd() {
   DRY_RUN=0

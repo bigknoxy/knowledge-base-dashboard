@@ -1,6 +1,6 @@
 [project]
 name = "knowledge-base-dashboard"
-version = "0.1.1"
+version = "0.1.2"
 description = "Interactive TUI dashboard for git history and experiment analytics"
 requires-python = ">=3.10"
 license = {text = "MIT"}
