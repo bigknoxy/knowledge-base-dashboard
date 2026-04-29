@@ -59,10 +59,10 @@ install_kbd() {
   if ! command -v uv > /dev/null 2>&1; then
     printf '%b\n' "${YELLOW}Installing uv package manager...${NC}"
     if [ "$DRY_RUN" -eq 0 ]; then
-      if curl -fsSL https://astral.sh/uv/install.sh | sh > /dev/null 2>&1; then
+      if curl -fsSL https://astral.sh/uv/install.sh | sh; then
         export PATH="${HOME}/.local/bin:${PATH}"
       else
-        printf '%b\n' "${RED}❌ Failed to install uv. Check internet connection.${NC}" >&2
+        printf '\n%b\n' "${RED}❌ Failed to install uv. Check internet connection.${NC}" >&2
         exit 1
       fi
     else
@@ -104,11 +104,12 @@ install_kbd() {
   fi
 
   if [ "$DRY_RUN" -eq 0 ]; then
-    if ! eval "$INSTALL_CMD" > /dev/null 2>&1; then
-      printf '%b\n' "${RED}Failed to install ${PACKAGE_NAME}.${NC}" >&2
+    if ! eval "$INSTALL_CMD"; then
+      printf '\n%b\n' "${RED}❌ Failed to install ${PACKAGE_NAME}.${NC}" >&2
       if [ "$INSTALL_SOURCE" = "git" ]; then
         printf '%b\n' "${YELLOW}Tip: Re-run with --pypi to install from PyPI instead of git${NC}" >&2
       fi
+      printf '%b\n' "${YELLOW}For more details, run with: bash -x install.sh${NC}" >&2
       exit 1
     fi
   else
