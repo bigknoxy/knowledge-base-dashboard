@@ -1,5 +1,5 @@
 from collections import Counter
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from models.experiment import ExperimentSession
 from models.pattern import PatternModel
@@ -30,8 +30,8 @@ def detect_patterns(sessions: list[ExperimentSession]) -> list[PatternModel]:
                 action=action,
                 frequency=freq,
                 confidence=confidence,
-                first_seen=datetime.now(UTC),
-                last_seen=datetime.now(UTC),
+                first_seen=datetime.now(timezone.utc),
+                last_seen=datetime.now(timezone.utc),
             ))
 
     # Pattern 2: "always discards runs when description contains X"
