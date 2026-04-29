@@ -1,8 +1,11 @@
 import json
+import subprocess
 from pathlib import Path
 
 import typer
 from rich.console import Console
+
+from cli import __version__
 
 app = typer.Typer(name="kbd", help="Knowledge Base Dashboard — your coding patterns, visualized.")
 
@@ -11,6 +14,52 @@ def _get_db_path() -> Path:
     from core.config import AppConfig
     cfg = AppConfig.from_toml()
     return Path(cfg.database.path)
+
+
+@app.command()
+def version() -> None:
+    """Show kbd version."""
+    console = Console()
+    console.print(f"[bold]Knowledge Base Dashboard[/bold] v{__version__}")
+
+
+@app.command()
+def update() -> None:
+    """Update kbd to the latest version."""
+    console = Console()
+    console.print(f"[blue]Current version: v{__version__}[/blue]")
+    console.print("[yellow]Updating kbd...[/yellow]")
+
+    def run_install(target: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            ["uv", "tool", "install", "--force", target],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+
+    try:
+        result = run_install("knowledge-base-dashboard")
+        if result.returncode != 0:
+            console.print("[red]Update failed from PyPI, trying git...[/red]")
+            result = run_install("git+https://github.com/bigknoxy/knowledge-base-dashboard.git")
+            if result.returncode != 0:
+                console.print("[red]Update failed.[/red]")
+                if result.stderr:
+                    console.print(f"[red]{result.stderr}[/red]")
+                raise typer.Exit(1) from None
+
+        console.print("[green]✓ Updated successfully.[/green]")
+        console.print("[blue]Run 'kbd version' to confirm the new version.[/blue]")
+    except subprocess.TimeoutExpired as e:
+        console.print("[red]Update timed out.[/red]")
+        raise typer.Exit(1) from e
+    except FileNotFoundError as e:
+        console.print("[red]uv package manager not found. Please install uv first.[/red]")
+        raise typer.Exit(1) from e
+    except OSError as e:
+        console.print(f"[red]Update failed: {e}[/red]")
+        raise typer.Exit(1) from e
 
 
 @app.command()
